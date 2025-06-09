@@ -10,6 +10,27 @@ import subprocess
 #Configure logging
 logging.basicConfig(level=logging.INFO)
 
+def on_user_approved():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_path = os.path.abspath(os.path.join(script_dir, '../../push_to_github.sh'))
+    commit_message = "Automated commit: User approved changes"
+    
+    # Path to Git Bash
+    git_bash_path = r"C:\Program Files\Git\bin\bash.exe"
+
+    st.text_area("Running script:", script_path)
+
+    try:
+        result = subprocess.run(
+            [git_bash_path, script_path, commit_message],
+            capture_output=True,
+            text=True
+        )
+        st.text_area("Stdout", result.stdout)
+        st.error(result.stderr)
+    except Exception as e:
+        st.error(f"Error: {e}")
+
 def configure_sidebar():
     """Configure the sidebar with navigation options"""
     if "selected_option" not in st.session_state:
@@ -88,22 +109,19 @@ def multi_agent():
 
         if user_input:
             if user_input.strip().upper() == "APPROVED":
-                # bash_path = '/usr/bin/bash'
-                script_dir = os.path.dirname(os.path.abspath(__file__))
-                script_path = os.path.abspath(os.path.join(script_dir, '../../push_to_github.sh'))
-                commit_message = "Automated commit: User approved changes"
+                on_user_approved()
+
+
+                # script_dir = os.path.dirname(os.path.abspath(__file__))
+                # script_path = os.path.abspath(os.path.join(script_dir, '../../push_to_github.sh'))
+                # commit_message = "Automated commit: User approved changes"
                 
-                try:
-                    st.text_area(script_path)
-
-                    result = subprocess.run([script_path], capture_output=True, text=True)
-                    st.text_area(result.stdout)
-
-                    # print(result.stdout)
-                    # subprocess.run([script_path, commit_message], check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-                    # st.success("Changes have been pushed to the Git repository.")
-                except subprocess.CalledProcessError as e:
-                    st.error(f"Failed to push changes to GitHub: {e}")
+                # try:
+                    
+                #     subprocess.run([script_path, commit_message], check=True)
+                #     st.success("Changes have been pushed to the Git repository.")
+                # except subprocess.CalledProcessError as e:
+                #     st.error(f"Failed to push changes to GitHub: {e}")
             else:
                 try:
                     st.session_state.multi_agent_history.append({"role": "user", "message": user_input})
