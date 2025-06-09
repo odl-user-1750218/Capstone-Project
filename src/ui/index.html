@@ -1,77 +1,99 @@
-<html>
+<html lang="en">
 <head>
-  <title>Basic Calculator</title>
-  <style>
-    .calculator {
-      width: 200px;
-      margin: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .calculator button {
-      margin: 5px;
-    }
-    .result {
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .calculator {
+            margin-top: 50px;
+            background: #fff;
+            display: inline-block;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: #fff;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="calculator">
-    <input id="num1" type="number" placeholder="Enter first number">
-    <br>
-    <input id="num2" type="number" placeholder="Enter second number">
-    <br>
-    <div class="result" id="resultDisplay">Result: </div>
-    <button onclick="performCalculation('+')">+</button>
-    <button onclick="performCalculation('-')">-</button>
-    <button onclick="performCalculation('*')">*</button>
-    <button onclick="performCalculation('/')">/</button>
-    <button onclick="clearCalculator()">Clear</button>
-  </div>
+    <div class="calculator">
+        <h1>Simple Calculator</h1>
+        <div>
+            <input type="number" id="num1" placeholder="Enter number 1">
+            <input type="number" id="num2" placeholder="Enter number 2">
+        </div>
+        <div>
+            <button onclick="calculate('+')">Add (+)</button>
+            <button onclick="calculate('-')">Subtract (-)</button>
+            <button onclick="calculate('*')">Multiply (*)</button>
+            <button onclick="calculate('/')">Divide (/)</button>
+        </div>
+        <div id="result"></div>
+    </div>
 
-  <script>
-    function performCalculation(operation) {
-      const num1 = parseFloat(document.getElementById('num1').value);
-      const num2 = parseFloat(document.getElementById('num2').value);
-      let result = 0;
-      
-      if (isNaN(num1) || isNaN(num2)) {
-        alert("Please enter valid numbers!");
-        return;
-      }
+    <script>
+        function calculate(operator) {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+            let result;
 
-      switch(operation) {
-        case '+':
-          result = num1 + num2;
-          break;
-        case '-':
-          result = num1 - num2;
-          break;
-        case '*':
-          result = num1 * num2;
-          break;
-        case '/':
-          if (num2 === 0) {
-            alert("Cannot divide by zero!");
-            return;
-          }
-          result = num1 / num2;
-          break;
-        default:
-          alert("Invalid operation selected.");
-          return;
-      }
+            if (isNaN(num1) || isNaN(num2)) {
+                result = "Please enter valid numbers!";
+            } else {
+                switch (operator) {
+                    case '+':
+                        result = num1 + num2;
+                        break;
+                    case '-':
+                        result = num1 - num2;
+                        break;
+                    case '*':
+                        result = num1 * num2;
+                        break;
+                    case '/':
+                        if (num2 === 0) {
+                            result = "Division by zero is not allowed!";
+                        } else {
+                            result = num1 / num2;
+                        }
+                        break;
+                    default:
+                        result = "Invalid operation!";
+                }
+            }
 
-      document.getElementById('resultDisplay').textContent = `Result: ${result}`;
-    }
-
-    function clearCalculator() {
-      document.getElementById('num1').value = '';
-      document.getElementById('num2').value = '';
-      document.getElementById('resultDisplay').textContent = 'Result: ';
-    }
-  </script>
+            document.getElementById('result').innerText = `Result: ${result}`;
+        }
+    </script>
 </body>
 </html>

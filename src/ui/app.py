@@ -6,10 +6,8 @@ from multi_agent import run_multi_agent
 import os
 import subprocess
 
-
 #Configure logging
 logging.basicConfig(level=logging.INFO)
-
 def on_user_approved():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     script_path = os.path.abspath(os.path.join(script_dir, '../../push_to_github.sh'))
@@ -121,6 +119,7 @@ def multi_agent():
                             st.session_state.multi_agent_history.append({
                                 "role": response["role"],
                                 "message": response["content"]
+                                
                             })
 
                 except Exception as e:

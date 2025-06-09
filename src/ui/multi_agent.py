@@ -71,14 +71,11 @@ def initialize_kernel():
     kernel.add_service(chat_completion_service)
     return kernel
 
-# Define a custom termination strategy
+# Stop condition: user says APPROVED
 class ApprovalTerminationStrategy(TerminationStrategy):
-    """A strategy for determining when an agent should terminate."""
-    
     async def should_agent_terminate(self, agent, history):
-        """Check if the agent should terminate."""
         for message in history:
-            if "APPROVED" in message.content:
+            if message.role == AuthorRole.USER and "APPROVED" in message.content.upper():
                 return True
         return False
 
@@ -157,10 +154,11 @@ async def run_multi_agent(user_input: str):
         - {PO}
 
         Rules:
-        - If RESPONSE is user input, it is {BA}'s turn.
-        - If RESPONSE is by {BA}, it is {SE}'s turn.
-        - If RESPONSE is by {SE}, it is {PO}'s turn.
-        - If RESPONSE is by {PO}, the process is complete.
+        - If RESPONSE is user input, it's {BA}'s turn.
+        - If RESPONSE is by {BA}, it's {SE}'s turn.
+        - If RESPONSE is by {SE}, it's {PO}'s turn.
+        - If RESPONSE is by {PO} and contains 'READY FOR USER APPROVAL', it's USER's turn.
+        - If RESPONSE is by {PO} and does NOT contain 'READY FOR USER APPROVAL', it's {SE}'s turn.
 
         RESPONSE:
         {{{{$lastmessage}}}}
@@ -193,7 +191,9 @@ async def run_multi_agent(user_input: str):
             history_variable_name="lastmessage",
             history_reducer=history_reducer,
         ),
-        termination_strategy=KernelFunctionTerminationStrategy(
+        termination_strategy=
+        # ApprovalTerminationStrategy()
+        KernelFunctionTerminationStrategy(
             agents=[product_owner_agent],
             function=termination_function,
             kernel=kernel,
