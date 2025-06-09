@@ -94,8 +94,14 @@ def multi_agent():
                 commit_message = "Automated commit: User approved changes"
                 
                 try:
-                    subprocess.run(["bash", script_path, commit_message], check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-                    st.success("Changes have been pushed to the Git repository.")
+                    st.text_area(script_path)
+
+                    result = subprocess.run([script_path], capture_output=True, text=True)
+                    st.text_area(result.stdout)
+
+                    # print(result.stdout)
+                    # subprocess.run([script_path, commit_message], check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                    # st.success("Changes have been pushed to the Git repository.")
                 except subprocess.CalledProcessError as e:
                     st.error(f"Failed to push changes to GitHub: {e}")
             else:
