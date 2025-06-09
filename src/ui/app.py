@@ -3,6 +3,8 @@ import asyncio
 import logging
 from chat import process_message, reset_chat_history
 from multi_agent import run_multi_agent
+import os
+import subprocess
 
 
 #Configure logging
@@ -83,21 +85,33 @@ def multi_agent():
         st.session_state.multi_agent_history = []
 
     def on_multi_agent_submit(user_input):
-        if user_input:
-            try:
-                st.session_state.multi_agent_history.append({"role": "user", "message": user_input})
-                with st.spinner("Agents are collaborating..."):
-                    result = asyncio.run(run_multi_agent(user_input))
-                    # Fix: Extract messages from the result dictionary and map content to message
-                    for response in result["messages"]:
-                        st.session_state.multi_agent_history.append({
-                            "role": response["role"],
-                            "message": response["content"]
-                        })
 
-            except Exception as e:
-                logging.error(f"Error in multi-agent system: {e}")
-                st.error("An error occurred while processing the multi-agent request.")
+        if user_input:
+            if user_input.strip().upper() == "APPROVED":
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                script_path = os.path.abspath(os.path.join(script_dir, '../../push_to_github.sh'))
+                commit_message = "Automated commit: User approved changes"
+                
+                try:
+                    subprocess.run(['bash', script_path, commit_message], check=True)
+                    st.success("Changes have been pushed to the Git repository.")
+                except subprocess.CalledProcessError as e:
+                    st.error(f"Failed to push changes to GitHub: {e}")
+            else:
+                try:
+                    st.session_state.multi_agent_history.append({"role": "user", "message": user_input})
+                    with st.spinner("Agents are collaborating..."):
+                        result = asyncio.run(run_multi_agent(user_input))
+                        # Fix: Extract messages from the result dictionary and map content to message
+                        for response in result["messages"]:
+                            st.session_state.multi_agent_history.append({
+                                "role": response["role"],
+                                "message": response["content"]
+                            })
+
+                except Exception as e:
+                    logging.error(f"Error in multi-agent system: {e}")
+                    st.error("An error occurred while processing the multi-agent request.")
         
     #Display multi-agent chat history
         display_chat_history(st.session_state.multi_agent_history)

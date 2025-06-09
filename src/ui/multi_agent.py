@@ -1,19 +1,3 @@
-import os
-import asyncio
-
-from semantic_kernel.agents import AgentGroupChat, ChatCompletionAgent
-from semantic_kernel.agents.strategies.termination.termination_strategy import TerminationStrategy
-from semantic_kernel.agents.strategies.selection.kernel_function_selection_strategy import (
-    KernelFunctionSelectionStrategy,
-)
-from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoiceBehavior
-from semantic_kernel.connectors.ai.open_ai.services.azure_chat_completion import AzureChatCompletion
-from semantic_kernel.contents.chat_message_content import ChatMessageContent
-from semantic_kernel.contents.utils.author_role import AuthorRole
-from semantic_kernel.kernel import Kernel
-
-
-
 # class ApprovalTerminationStrategy(TerminationStrategy):
 #     """A strategy for determining when an agent should terminate."""
  
@@ -71,18 +55,6 @@ class FileSavePlugin:
             file_path = "index.html"
             with open(file_path, "w", encoding="utf-8") as file:
                 file.write(html_content)
-            # Push to GitHub
-            # Define the path to the script relative to the current script location
-            
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            script_path = os.path.join(script_dir, '../../push_to_github.sh')
-            print(f"Resolved script path: {script_path}")
-            
-            commit_message = "Automated commit: Changes approved"
-            # Call the Bash script with subprocess
-            commit_message = "Automated commit: Changes approved"
-            subprocess.run(['bash', '../../push_to_github.sh', commit_message], check=True)
-            
             return f"HTML content saved to {file_path}"
         else:
             return "No HTML content found in the provided text."
