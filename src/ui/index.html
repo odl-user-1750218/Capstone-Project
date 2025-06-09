@@ -7,90 +7,124 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            padding: 20px;
         }
         .calculator {
             display: inline-block;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             padding: 20px;
             border-radius: 10px;
-            background: #f9f9f9;
         }
-        .calculator input {
-            font-size: 18px;
-        }
-        .result {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-        .buttons button {
-            font-size: 18px;
-            margin: 5px;
+        .display {
+            width: 100%;
+            margin-bottom: 10px;
             padding: 10px;
-            cursor: pointer;
+            font-size: 1.2em;
+            text-align: right;
         }
-        .buttons button:hover {
-            background: #ddd;
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            gap: 10px;
+        }
+        .button {
+            padding: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .button:hover {
+            background-color: #ddd;
         }
     </style>
 </head>
 <body>
+
     <div class="calculator">
-        <div class="result" id="result">0</div>
-        <div>
-            <input type="text" id="num1" placeholder="Enter number 1">
-        </div>
-        <div>
-            <input type="text" id="num2" placeholder="Enter number 2">
-        </div>
+        <input type="text" id="display" class="display" disabled>
         <div class="buttons">
-            <button onclick="calculate('+')">Add</button>
-            <button onclick="calculate('-')">Subtract</button>
-            <button onclick="calculate('*')">Multiply</button>
-            <button onclick="calculate('/')">Divide</button>
-            <button onclick="clearFields()">Clear</button>
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button" onclick="chooseOperation('/')">/</button>
+
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button" onclick="chooseOperation('*')">*</button>
+
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button" onclick="chooseOperation('-')">-</button>
+
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="clearDisplay()">C</button>
+            <button class="button" onclick="computeResult()">=</button>
+            <button class="button" onclick="chooseOperation('+')">+</button>
         </div>
     </div>
 
     <script>
-        function calculate(operator) {
-            const num1 = parseFloat(document.getElementById('num1').value);
-            const num2 = parseFloat(document.getElementById('num2').value);
+        let currentInput = '';
+        let previousInput = '';
+        let operation = null;
 
-            if (isNaN(num1) || isNaN(num2)) {
-                alert("Please enter valid numbers.");
-                return;
-            }
+        const display = document.getElementById('display');
 
-            let result;
-            switch (operator) {
-                case '+':
-                    result = num1 + num2;
-                    break;
-                case '-':
-                    result = num1 - num2;
-                    break;
-                case '*':
-                    result = num1 * num2;
-                    break;
-                case '/':
-                    if (num2 === 0) {
-                        alert("Division by zero is not allowed.");
-                        return;
-                    }
-                    result = num1 / num2;
-                    break;
-                default:
-                    result = 0;
-            }
-
-            document.getElementById('result').textContent = result;
+        function appendNumber(number) {
+            currentInput += number;
+            updateDisplay(currentInput);
         }
 
-        function clearFields() {
-            document.getElementById('num1').value = "";
-            document.getElementById('num2').value = "";
-            document.getElementById('result').textContent = "0";
+        function chooseOperation(op) {
+            if (currentInput === '') return;
+            if (previousInput !== '') {
+                computeResult();
+            }
+            operation = op;
+            previousInput = currentInput;
+            currentInput = '';
+        }
+
+        function computeResult() {
+            let computation;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentInput = computation;
+            operation = null;
+            previousInput = '';
+            updateDisplay(currentInput);
+        }
+
+        function updateDisplay(value) {
+            display.value = value;
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            previousInput = '';
+            operation = null;
+            updateDisplay('');
         }
     </script>
 </body>

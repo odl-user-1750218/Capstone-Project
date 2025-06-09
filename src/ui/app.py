@@ -88,12 +88,13 @@ def multi_agent():
 
         if user_input:
             if user_input.strip().upper() == "APPROVED":
+                # bash_path = '/usr/bin/bash'
                 script_dir = os.path.dirname(os.path.abspath(__file__))
                 script_path = os.path.abspath(os.path.join(script_dir, '../../push_to_github.sh'))
                 commit_message = "Automated commit: User approved changes"
                 
                 try:
-                    subprocess.run(['bash', script_path, commit_message], check=True)
+                    subprocess.run(["bash", script_path, commit_message], check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
                     st.success("Changes have been pushed to the Git repository.")
                 except subprocess.CalledProcessError as e:
                     st.error(f"Failed to push changes to GitHub: {e}")
