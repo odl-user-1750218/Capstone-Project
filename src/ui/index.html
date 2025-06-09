@@ -1,110 +1,77 @@
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
-        }
-        .calculator {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-        }
-        .display {
-            width: 100%;
-            height: 50px;
-            margin-bottom: 10px;
-            text-align: right;
-            padding: 0 10px;
-            font-size: 1.2em;
-        }
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-        }
-        .buttons button {
-            height: 50px;
-            font-size: 1em;
-            cursor: pointer;
-            border: none;
-            background: #007bff;
-            color: white;
-            border-radius: 5px;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-        }
-        .buttons .clear {
-            background: #dc3545;
-        }
-        .buttons .equals {
-            background: #28a745;
-        }
-    </style>
+  <title>Basic Calculator</title>
+  <style>
+    .calculator {
+      width: 200px;
+      margin: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .calculator button {
+      margin: 5px;
+    }
+    .result {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="calculator">
-        <input type="text" id="display" class="display" disabled>
-        <div class="buttons">
-            <button onclick="pressKey('7')">7</button>
-            <button onclick="pressKey('8')">8</button>
-            <button onclick="pressKey('9')">9</button>
-            <button onclick="pressKey('/')">/</button>
-            
-            <button onclick="pressKey('4')">4</button>
-            <button onclick="pressKey('5')">5</button>
-            <button onclick="pressKey('6')">6</button>
-            <button onclick="pressKey('*')">*</button>
-            
-            <button onclick="pressKey('1')">1</button>
-            <button onclick="pressKey('2')">2</button>
-            <button onclick="pressKey('3')">3</button>
-            <button onclick="pressKey('-')">-</button>
-            
-            <button onclick="pressKey('0')">0</button>
-            <button onclick="pressKey('.')">.</button>
-            <button class="equals" onclick="calculate()">=</button>
-            <button onclick="pressKey('+')">+</button>
-            
-            <button class="clear" onclick="clearDisplay()">C</button>
-        </div>
-    </div>
+  <div class="calculator">
+    <input id="num1" type="number" placeholder="Enter first number">
+    <br>
+    <input id="num2" type="number" placeholder="Enter second number">
+    <br>
+    <div class="result" id="resultDisplay">Result: </div>
+    <button onclick="performCalculation('+')">+</button>
+    <button onclick="performCalculation('-')">-</button>
+    <button onclick="performCalculation('*')">*</button>
+    <button onclick="performCalculation('/')">/</button>
+    <button onclick="clearCalculator()">Clear</button>
+  </div>
 
-    <script>
-        let currentInput = "";
+  <script>
+    function performCalculation(operation) {
+      const num1 = parseFloat(document.getElementById('num1').value);
+      const num2 = parseFloat(document.getElementById('num2').value);
+      let result = 0;
+      
+      if (isNaN(num1) || isNaN(num2)) {
+        alert("Please enter valid numbers!");
+        return;
+      }
 
-        function pressKey(key) {
-            currentInput += key;
-            updateDisplay();
-        }
+      switch(operation) {
+        case '+':
+          result = num1 + num2;
+          break;
+        case '-':
+          result = num1 - num2;
+          break;
+        case '*':
+          result = num1 * num2;
+          break;
+        case '/':
+          if (num2 === 0) {
+            alert("Cannot divide by zero!");
+            return;
+          }
+          result = num1 / num2;
+          break;
+        default:
+          alert("Invalid operation selected.");
+          return;
+      }
 
-        function clearDisplay() {
-            currentInput = "";
-            updateDisplay();
-        }
+      document.getElementById('resultDisplay').textContent = `Result: ${result}`;
+    }
 
-        function updateDisplay() {
-            document.getElementById("display").value = currentInput;
-        }
-
-        function calculate() {
-            try {
-                currentInput = eval(currentInput).toString();
-                updateDisplay();
-            } catch (error) {
-                currentInput = "Error";
-                updateDisplay();
-                currentInput = "";
-            }
-        }
-    </script>
+    function clearCalculator() {
+      document.getElementById('num1').value = '';
+      document.getElementById('num2').value = '';
+      document.getElementById('resultDisplay').textContent = 'Result: ';
+    }
+  </script>
 </body>
 </html>

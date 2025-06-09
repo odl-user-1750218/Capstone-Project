@@ -26,9 +26,9 @@ def on_user_approved():
             capture_output=True,
             text=True
         )
-        st.text_area("Stdout", result.stdout)
-        st.error(result.stderr)
+
     except Exception as e:
+ 
         st.error(f"Error: {e}")
 
 def configure_sidebar():
@@ -110,7 +110,7 @@ def multi_agent():
         if user_input:
             if user_input.strip().upper() == "APPROVED":
                 on_user_approved()
-                
+
             else:
                 try:
                     st.session_state.multi_agent_history.append({"role": "user", "message": user_input})
